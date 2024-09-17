@@ -1,0 +1,12 @@
+.visualizer-box {
+    background-color: #2c2c2c;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+}
+
+.visualizer-content {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+}
