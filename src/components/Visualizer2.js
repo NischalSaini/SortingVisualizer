@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { bubbleSort } from '../sortingAlgorithms/bubbleSort';
+import { insertionSort } from '../sortingAlgorithms/insertionSort'; // Assuming insertionSort is implemented
 import './h.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const Visualizer = () => {
+const Visualizer2 = () => {
     const [array, setArray] = useState([]);
     const [steps, setSteps] = useState([]);
     const [stepIndex, setStepIndex] = useState(0);
@@ -12,24 +12,21 @@ const Visualizer = () => {
 
     const handleSort = () => {
         if (array.length === 0) return;
-        const sortSteps = bubbleSort([...array]);
+        const sortSteps = insertionSort([...array]);
         setSteps(sortSteps);
         setStepIndex(0);
         setIsSorting(true);
-
-        // Set the sorted array once sorting is completed
-        const sortedArray = sortSteps[sortSteps.length - 1];
-        setArray(sortedArray);
     };
 
     useEffect(() => {
         let interval;
-        if (isSorting && steps.length && stepIndex < steps.length) {
+        if (isSorting && steps.length > 0 && stepIndex < steps.length) {
             interval = setInterval(() => {
                 setStepIndex(prev => prev + 1);
             }, 500);
         } else if (stepIndex >= steps.length) {
             setIsSorting(false);
+            setArray(steps[steps.length - 1] || []); // Safely handle case if steps is empty
         }
         return () => clearInterval(interval);
     }, [isSorting, stepIndex, steps]);
@@ -37,20 +34,13 @@ const Visualizer = () => {
     const handleInputChange = (e) => {
         const input = e.target.value;
         setInputValue(input);
+
         const numbers = input
             .split(',')
             .map(num => parseInt(num.trim(), 10))
             .filter(num => !isNaN(num));
-        setArray(numbers);
-    };
 
-    const handleInputSubmit = () => {
-        const numbers = inputValue
-            .split(',')
-            .map(num => parseInt(num.trim(), 10))
-            .filter(num => !isNaN(num));
         setArray(numbers);
-        setInputValue('');
     };
 
     const handleReset = () => {
@@ -58,15 +48,24 @@ const Visualizer = () => {
         setIsSorting(false);
         setArray([]);
         setSteps([]);
+    };
+
+    const handleInputSubmit = () => {
+        const numbers = inputValue
+            .split(',')
+            .map(num => parseInt(num.trim(), 10))
+            .filter(num => !isNaN(num));
+
+        setArray(numbers);
         setInputValue('');
     };
 
-    const currentStep = steps[stepIndex] || array;
-    const maxBarHeight = Math.max(...array, 1); 
+    const currentStep = isSorting ? steps[stepIndex] || array : array; // Use the final array if not sorting
+    const maxBarHeight = Math.max(...array, 1);
 
     return (
         <div className="container text-center mt-5">
-            <h1 className="display-4 mb-4">Sorting Visualizer</h1>
+            <h1 className="display-4 mb-4">Insertion Sort Visualizer</h1>
 
             <div className="row mb-4 justify-content-center">
                 <div className="col-md-6 mb-2">
@@ -109,9 +108,9 @@ const Visualizer = () => {
                         key={index}
                         className="bar"
                         style={{
-                            height: `${(value / maxBarHeight) * 100}%`, 
+                            height: `${(value / maxBarHeight) * 100}%`,
                             width: '40px',
-                            transition: 'height 0.5s ease-out' 
+                            transition: 'height 0.5s ease-out'
                         }}
                     >
                         <span className="bar-value">{value}</span>
@@ -122,4 +121,5 @@ const Visualizer = () => {
     );
 };
 
-export default Visualizer;
+export default Visualizer2;
+
